@@ -20,7 +20,7 @@
     <button @click="generate">作成</button>
 
     <div>
-      <vue-qrcode v-if="qrcode.targetText" :value="qrcode.targetText" :options="qrcode.option" tag="img"></vue-qrcode>
+      <vue-qrcode v-if="qrcode.targetText" :type="qrcode.type" :value="qrcode.targetText" :options="qrcode.option" tag="img"></vue-qrcode>
     </div>
   </div>
 </template>
@@ -31,7 +31,7 @@
     export default {
         name: 'App',
         components: {
-            VueQrcode
+            VueQrcode,
         },
     data(){
         return{
@@ -42,17 +42,34 @@
             },
             qrcode:{
                 targetText: "",
-                option: "",
+                option: {
+                    errorCorrectionLevel: "M",
+                    maskPattern: 0,
+                    margin: 5,
+                    scale: 2,
+                    width: 150,
+                    color: {
+                        dark: "#000000FF",
+                        light: "#FFFFFFFF"
+                    }
+                }
             }
         }
     },
         methods:{
             generate(){ // QRコードを生成
                 if( this.wifi.ssid !== "" ){
-                    this.qrcode.targetText =
-                        "WIFI:T:" + this.wifi.type +
-                        ";S:" + this.wifi.ssid +
-                        ";P:" + this.wifi.pass + ";;";
+                    if( this.wifi.pass === "" ){
+                        this.qrcode.targetText =
+                            "WIFI:T:" + this.wifi.type +
+                            ";S:" + this.wifi.ssid + ";;";
+                    }else{
+                        this.qrcode.targetText =
+                            "WIFI:T:" + this.wifi.type +
+                            ";S:" + this.wifi.ssid +
+                            ";P:" + this.wifi.pass + ";;";
+                    }
+
                 }
             }
         }
